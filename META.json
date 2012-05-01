@@ -1,0 +1,40 @@
+{
+   "abstract" : "Simplified pure perl parser for XML",
+   "author" : [
+      "Klaus Eichner <klaus03@gmail.com>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112150",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "XML-Parsepp",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.3"
+         }
+      }
+   },
+   "provides" : {
+      "XML::Parsepp" : {
+         "file" : "lib/XML/Parsepp.pm",
+         "version" : "0.01"
+      },
+      "XML::Parsepp::ExpatNB" : {
+         "file" : "lib/XML/Parsepp.pm",
+         "version" : 0
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "0.01"
+}

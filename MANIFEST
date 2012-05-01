@@ -1,0 +1,12 @@
+Changes
+MANIFEST
+LICENCE
+Makefile.PL
+Build.PL
+README
+lib/XML/Parsepp.pm
+t/Test0040.t
+t/Test0050.t
+t/Test0100.t
+META.yml
+META.json
