@@ -23,7 +23,7 @@
    "provides" : {
       "XML::Parsepp" : {
          "file" : "lib/XML/Parsepp.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       },
       "XML::Parsepp::ExpatNB" : {
          "file" : "lib/XML/Parsepp.pm",
@@ -36,5 +36,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }
