@@ -11,16 +11,19 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT    = qw();
 our @EXPORT_OK = qw();
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 
 sub new {
     my $class = shift;
 
     my %HParam = @_;
 
-    my $self = { _Setters => {} };
+    my $self = { _Setters => {}, _Dupatt => '' };
     if ($HParam{Handlers}) {
         $self->{_Setters} = $HParam{Handlers};
+    }
+    if (defined $HParam{dupatt}) {
+        $self->{_Dupatt} = $HParam{dupatt};
     }
 
     bless $self, $class;
@@ -85,6 +88,7 @@ sub parse_start {
 
     my $ExpatNB = {
         _Setters     => $self->{_Setters},
+        _Dupatt      => $self->{_Dupatt},
         _Text        => '',
         _Action      => 'C', # DEFACT: 'C' = character data
         _Stage       => 1,   # DEFSTA: 1 = XMLDecl, 2 = DTD, 3 = StartTag/EndTag, 4 = Rest
@@ -125,7 +129,7 @@ sub parse_start {
 
 package XML::Parsepp::ExpatNB;
 
-our $version = '0.02';
+our $version = '0.03';
 
 use Carp;
 use File::Spec;
@@ -755,6 +759,8 @@ sub _emit_Start {
       or $self->crknum("Error-0420: Internal Error - Can't decompose start = '$emit'");
 
     my @attr;
+    my %att_hash;
+
     pos($param) = 0;
     while ($param =~ m{\G \s* ([,\-.\w:\[|]+) \s* = \s* (?: ' ([^']*) ' | " ([^"]*) " ) }xmsgc) {
         my $def_var = $1;
@@ -811,6 +817,16 @@ sub _emit_Start {
 
         $def_res .= $rest;
 
+        if (defined $att_hash{$def_var}) {
+            if ($self->{_Dupatt} eq '') {
+                $self->crknum("Error-0485: duplicate attribute");
+            }
+            $att_hash{$def_var} .= $self->{_Dupatt}.$def_res;
+        }
+        else {
+            $att_hash{$def_var} = $def_res;
+        }
+
         push @attr, $def_var, $def_res;
     }
     unless ($param =~ m{\G (.*) \z}xms) {
@@ -825,6 +841,10 @@ sub _emit_Start {
         else {
             $self->crknum("Error-0510: error in processing external entity reference");
         }
+    }
+
+    unless ($self->{_Dupatt} eq '') {
+        @attr = map { $_ => $att_hash{$_} } sort(keys %att_hash);
     }
 
     $self->_plausi('S'); # PLAUSI ==> 'S' = Start Tag
@@ -1850,6 +1870,15 @@ XML::Parsepp - Simplified pure perl parser for XML
   close(FOO);
 
   $p3->parsefile('junk.xml');
+
+Allow duplicate attributes with option: dupatt => ';'
+
+  $p1 = new XML::Parsepp(dupatt => ';');
+  $p1->parse('<foo id="me" id="too">Hello World</foo>');
+
+This will fire the Start event with the following parameters
+
+  start($ExpatNB, 'foo', 'id', 'me;too');
 
 =head1 DESCRIPTION
 

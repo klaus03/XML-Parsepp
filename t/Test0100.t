@@ -1,7 +1,7 @@
 use 5.014;
 use warnings;
 
-use Test::More tests => 924;
+use Test::More tests => 930;
 
 my $XML_module = 'XML::Parsepp';
 
@@ -15,11 +15,11 @@ my $line_done;
 my $XmlParser = $XML_module->new or die "Error-0010: Can't create $XML_module -> new";
 
 my @Handlers = (
-  [  1, Init         => \&handle_Init,         'INIT', occurs =>  103, 'Init         (Expat)'                                            ],
+  [  1, Init         => \&handle_Init,         'INIT', occurs =>  104, 'Init         (Expat)'                                            ],
   [  2, Final        => \&handle_Final,        'FINL', occurs =>   20, 'Final        (Expat)'                                            ],
-  [  3, Start        => \&handle_Start,        'STRT', occurs =>   46, 'Start        (Expat, Element, @Attr)'                            ],
+  [  3, Start        => \&handle_Start,        'STRT', occurs =>   47, 'Start        (Expat, Element, @Attr)'                            ],
   [  4, End          => \&handle_End,          'ENDL', occurs =>   26, 'End          (Expat, Element)'                                   ],
-  [  5, Char         => \&handle_Char,         'CHAR', occurs =>   45, 'Char         (Expat, String)'                                    ],
+  [  5, Char         => \&handle_Char,         'CHAR', occurs =>   47, 'Char         (Expat, String)'                                    ],
   [  6, Proc         => \&handle_Proc,         'PROC', occurs =>    3, 'Proc         (Expat, Target, Data)'                              ],
   [  7, Comment      => \&handle_Comment,      'COMT', occurs =>    2, 'Comment      (Expat, Data)'                                      ],
   [  8, CdataStart   => \&handle_CdataStart,   'CDST', occurs =>    0, 'CdataStart   (Expat)'                                            ],
@@ -2499,6 +2499,25 @@ $XmlParser->setHandlers(@HParam);
     is($err, '', 'Test-103a: No error');
     is(scalar(@result), scalar(@expected), 'Test-103b: Number of results');
     verify('103', \@result, \@expected);
+}
+
+{
+    get_result($XmlParser,
+               q{<data>}.qq{\n},
+               q{  <item alpha="aaa" beta="bbb" alpha="ccc">test</item>}.qq{\n},
+               q{</data>}.qq{\n},
+    );
+
+    my @expected = (
+        q{INIT},
+        q{STRT Ele=[data], Att=[]},
+        q{CHAR Str=[&<0a>]},
+        q{CHAR Str=[  ]},
+    );
+
+    like($err, qr{duplicate \s+ attribute}xms, 'Test-104a: error');
+    is(scalar(@result), scalar(@expected), 'Test-104b: Number of results');
+    verify('104', \@result, \@expected);
 }
 
 # ****************************************************************************************************************************

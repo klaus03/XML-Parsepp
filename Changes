@@ -8,3 +8,8 @@ Revision history for XML-Parsepp
         XML::Parsepp->parse('<foo id="me">Hello World</foo>');
         XML::Parsepp->new(Handlers => {Start => \&handle_start,
         End => \&handle_end, Char => \&handle_char});
+
+0.03    28 Jul 2012
+        die with duplicate attributes (and allow duplicate attributes
+        with a special option XML::Parsepp->new(dupatt => ';')
+        

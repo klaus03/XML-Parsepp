@@ -1,7 +1,7 @@
 use 5.012;
 use warnings;
 
-use Test::More tests => 1077;
+use Test::More tests => 1090;
 
 my $XML_module = 'XML::Parsepp';
 
@@ -16,13 +16,14 @@ my $retval;
 
 my $XmlParser1 = $XML_module->new or die "Error-0010: Can't create $XML_module -> new";
 my $XmlParser2 = $XML_module->new or die "Error-0015: Can't create $XML_module -> new";
+my $XmlParser3 = $XML_module->new(dupatt => '|') or die "Error-0018: Can't create $XML_module -> new";
 
 my @Handlers = (
-  [  1, Init         => \&handle_Init,         'INIT', occurs =>  106, 'Init         (Expat)'                                          ],
-  [  2, Final        => \&handle_Final,        'FINL', occurs =>   53, 'Final        (Expat)'                                          ],
-  [  3, Start        => \&handle_Start,        'STRT', occurs =>  112, 'Start        (Expat, Element [, Attr, Val [,...]])'            ],
-  [  4, End          => \&handle_End,          'ENDL', occurs =>   78, 'End          (Expat, Element)'                                 ],
-  [  5, Char         => \&handle_Char,         'CHAR', occurs =>  152, 'Char         (Expat, String)'                                  ],
+  [  1, Init         => \&handle_Init,         'INIT', occurs =>  108, 'Init         (Expat)'                                          ],
+  [  2, Final        => \&handle_Final,        'FINL', occurs =>   54, 'Final        (Expat)'                                          ],
+  [  3, Start        => \&handle_Start,        'STRT', occurs =>  115, 'Start        (Expat, Element [, Attr, Val [,...]])'            ],
+  [  4, End          => \&handle_End,          'ENDL', occurs =>   80, 'End          (Expat, Element)'                                 ],
+  [  5, Char         => \&handle_Char,         'CHAR', occurs =>  153, 'Char         (Expat, String)'                                  ],
   [  6, Proc         => \&handle_Proc,         'PROC', occurs =>    8, 'Proc         (Expat, Target, Data)'                            ],
   [  7, Comment      => \&handle_Comment,      'COMT', occurs =>    7, 'Comment      (Expat, Data)'                                    ],
   [  8, CdataStart   => \&handle_CdataStart,   'CDST', occurs =>    2, 'CdataStart   (Expat)'                                          ],
@@ -42,9 +43,11 @@ my @Handlers = (
 
 my @HParam1;
 my @HParam2;
+my @HParam3;
 for my $H (@Handlers) {
     push @HParam1, $H->[1], $H->[2];
     push @HParam2, $H->[1], $H->[2] unless $H->[1] eq 'ExternEnt' or $H->[1] eq 'ExternEntFin';
+    push @HParam3, $H->[1], $H->[2];
 }
 
 my %HInd;
@@ -56,6 +59,7 @@ for my $i (0..$#Handlers) {
 
 $XmlParser1->setHandlers(@HParam1);
 $XmlParser2->setHandlers(@HParam2);
+$XmlParser3->setHandlers(@HParam3);
 
 # most testcases have been inspired by...
 #   http://www.u-picardie.fr/~ferment/xml/xml02.html
@@ -2611,6 +2615,41 @@ $XmlParser2->setHandlers(@HParam2);
 
     is(scalar(@result), scalar(@expected), 'Test-109b: Number of results');
     verify('109', \@result, \@expected);
+}
+
+{
+    get_result($XmlParser2,
+               q{<root><data a2="zzz" a1="yyy" a2="xxx">ttt</data></root>});
+
+    like($err, qr{duplicate \s attribute}xms,      'Test-110a: error');
+
+    my @expected = (
+      'INIT',
+      'STRT ele=[root], atr=[]',
+    );
+
+    is(scalar(@result), scalar(@expected), 'Test-110b: Number of results');
+    verify('110', \@result, \@expected);
+}
+
+{
+    get_result($XmlParser3,
+               q{<root><data a2="zzz" a1="yyy" a2="xxx">ttt</data></root>});
+
+    is($err, '',      'Test-111a: error');
+
+    my @expected = (
+      'INIT',
+      'STRT ele=[root], atr=[]',
+      'STRT ele=[data], atr=[a1], [yyy], [a2], [zzz|xxx]',
+      'CHAR txt=[ttt]',
+      'ENDL ele=[data]',
+      'ENDL ele=[root]',
+      'FINL',
+    );
+
+    is(scalar(@result), scalar(@expected), 'Test-111b: Number of results');
+    verify('111', \@result, \@expected);
 }
 
 #~ {
