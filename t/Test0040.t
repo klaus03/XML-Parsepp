@@ -1,7 +1,7 @@
 use 5.012;
 use warnings;
 
-use Test::More tests => 1090;
+use Test::More tests => 1091;
 
 my $XML_module = 'XML::Parsepp';
 
@@ -17,6 +17,9 @@ my $retval;
 my $XmlParser1 = $XML_module->new or die "Error-0010: Can't create $XML_module -> new";
 my $XmlParser2 = $XML_module->new or die "Error-0015: Can't create $XML_module -> new";
 my $XmlParser3 = $XML_module->new(dupatt => '|') or die "Error-0018: Can't create $XML_module -> new";
+
+my $test_parser = eval{ $XML_module->new(dupatt => 'é')}; my $emsg = $@ ? $@ : '';
+like($emsg, qr{invalid \s dupatt}xms,      'Test-900a: error');
 
 my @Handlers = (
   [  1, Init         => \&handle_Init,         'INIT', occurs =>  108, 'Init         (Expat)'                                          ],

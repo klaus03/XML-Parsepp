@@ -1,10 +1,41 @@
-XML-Parsepp Version 0.03
+XML-Parsepp Version 0.04
 
 Simplified pure perl parser for XML
 
 SYNOPSIS
 
     use XML::Parsepp;
+  
+    $p1 = new XML::Parsepp;
+    $p1->parsefile('REC-xml-19980210.xml');
+    $p1->parse('<foo id="me">Hello World</foo>');
+
+    # Alternative
+    $p2 = new XML::Parsepp(Handlers => {Start => \&handle_start,
+                                        End   => \&handle_end,
+                                        Char  => \&handle_char});
+    $p2->parse($socket);
+
+    # Another alternative
+    $p3 = new XML::Parsepp;
+
+    $p3->setHandlers(Char    => \&text,
+                     Default => \&other);
+
+    open(FOO, 'xmlgenerator |');
+    $p3->parse(*FOO);
+    close(FOO);
+
+    $p3->parsefile('junk.xml');
+
+  Allow duplicate attributes with option: dupatt => ';'
+
+    $p1 = new XML::Parsepp(dupatt => ';');
+    $p1->parse('<foo id="me" id="too">Hello World</foo>');
+
+  This will fire the Start event with the following parameters
+
+    start($ExpatNB, 'foo', 'id', 'me;too');
 
 INSTALLATION
 

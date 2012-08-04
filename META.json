@@ -4,7 +4,7 @@
       "Klaus Eichner <klaus03@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
    "license" : [
       "perl_5"
    ],
@@ -23,7 +23,7 @@
    "provides" : {
       "XML::Parsepp" : {
          "file" : "lib/XML/Parsepp.pm",
-         "version" : "0.03"
+         "version" : "0.04"
       },
       "XML::Parsepp::ExpatNB" : {
          "file" : "lib/XML/Parsepp.pm",
@@ -36,5 +36,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.03"
+   "version" : "0.04"
 }

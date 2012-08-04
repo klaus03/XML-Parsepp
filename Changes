@@ -12,4 +12,8 @@ Revision history for XML-Parsepp
 0.03    28 Jul 2012
         die with duplicate attributes (and allow duplicate attributes
         with a special option XML::Parsepp->new(dupatt => ';')
-        
+
+0.04    04 Aug 2012
+        The concatenation string XML::Parsepp->new(dupatt => $str) is
+        restricted to printable ascii excluding " and '
+        Add some examples to the README file

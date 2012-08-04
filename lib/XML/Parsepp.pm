@@ -11,7 +11,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT    = qw();
 our @EXPORT_OK = qw();
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 
 sub new {
     my $class = shift;
@@ -23,7 +23,16 @@ sub new {
         $self->{_Setters} = $HParam{Handlers};
     }
     if (defined $HParam{dupatt}) {
-        $self->{_Dupatt} = $HParam{dupatt};
+        my $cstr = $HParam{dupatt};
+
+        unless ($cstr =~ m{\A [\x{21}-\x{bf}]* \z}xms) {
+            croak("Error-0005: invalid dupatt");
+        }
+        if ($cstr =~ m{[0-9A-Za-z"']}xms) {
+            croak("Error-0006: invalid dupatt");
+        }
+
+        $self->{_Dupatt} = $cstr;
     }
 
     bless $self, $class;
@@ -129,7 +138,7 @@ sub parse_start {
 
 package XML::Parsepp::ExpatNB;
 
-our $version = '0.03';
+our $version = '0.04';
 
 use Carp;
 use File::Spec;
@@ -1872,6 +1881,9 @@ XML::Parsepp - Simplified pure perl parser for XML
   $p3->parsefile('junk.xml');
 
 Allow duplicate attributes with option: dupatt => ';'
+
+The concatenation string XML::Parsepp->new(dupatt => $str) is
+restricted to printable ascii excluding " and '
 
   $p1 = new XML::Parsepp(dupatt => ';');
   $p1->parse('<foo id="me" id="too">Hello World</foo>');
