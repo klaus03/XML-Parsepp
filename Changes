@@ -17,3 +17,6 @@ Revision history for XML-Parsepp
         The concatenation string XML::Parsepp->new(dupatt => $str) is
         restricted to printable ascii excluding " and '
         Add some examples to the README file
+
+0.05    07 Aug 2012
+        Correct error in Makefile.PL ==> VERSION_FROM =>
