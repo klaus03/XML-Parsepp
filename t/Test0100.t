@@ -1,5 +1,6 @@
 use 5.014;
 use warnings;
+# Generate Tests for XML::Parsepp
 
 use Test::More tests => 930;
 
@@ -54,6 +55,8 @@ $XmlParser->setHandlers(@HParam);
 #   http://www.comptechdoc.org/independent/web/dtd/dtddekeywords.html
 #   http://xmlwriter.net/xml_guide/attlist_declaration.shtml
 # *************************************************************************************
+
+# No of get_result is 104
 
 {
     get_result($XmlParser,

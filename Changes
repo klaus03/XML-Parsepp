@@ -20,3 +20,7 @@ Revision history for XML-Parsepp
 
 0.05    07 Aug 2012
         Correct error in Makefile.PL ==> VERSION_FROM =>
+
+0.06    19 Aug 2012
+        Add references to XML::Parsepp::Testgen to the documentation and
+        update Test0100.t to comply with XML::Parsepp::Testgen

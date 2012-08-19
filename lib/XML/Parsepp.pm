@@ -11,7 +11,7 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT    = qw();
 our @EXPORT_OK = qw();
-our $VERSION   = '0.05';
+our $VERSION   = '0.06';
 
 sub new {
     my $class = shift;
@@ -138,7 +138,7 @@ sub parse_start {
 
 package XML::Parsepp::ExpatNB;
 
-our $version = '0.04';
+our $version = '0.06';
 
 use Carp;
 use File::Spec;
@@ -1912,6 +1912,43 @@ where it can be used as a drop-in replacement. Here is a sample:
       printf "Path: %-19s, Value: %s\n", $rdr->path, $rdr->value;
   }
 
+=head1 AUTO-GENERATE TESTCASES
+
+You can use the module XML::Parsepp::Testgen to generate testcases.
+
+For example, you can generate a test file from an existing XML with the following
+program:
+
+  use XML::Parsepp::Testgen qw(xml_2_test);
+
+  my $xml =
+    qq{#! Testdata for XML::Parsepp\n}.
+    qq{#! Ver 0.01\n}.
+    qq{<?xml version="1.0" encoding="ISO-8859-1"?>\n}.
+    qq{<!DOCTYPE dialogue [\n}.
+    qq{  <!ENTITY nom0 "<data>y<item>y &nom1; zz</data>">\n}.
+    qq{  <!ENTITY nom1 "<abc>def</abc></item>">\n}.
+    qq{]>\n}.
+    qq{<root>&nom0;</root>\n}.
+    qq{#! ===\n}.
+    qq{<?xml version="1.0" encoding="ISO-8859-1"?>\n}.
+    qq{<!DOCTYPE dialogue\n}.
+    qq{[\n}.
+    qq{  <!ENTITY nom1 "aa &nom2; tt &nom4; bb">\n}.
+    qq{  <!ENTITY nom2 "c <xx>abba</xx> c tx <ab> &nom3; dd">\n}.
+    qq{  <!ENTITY nom3 "dd </ab> <yy>&nom4;</yy> ee">\n}.
+    qq{  <!ENTITY nom4 "gg">\n}.
+    qq{]>\n}.
+    qq{<root>hh &nom1; ii</root>\n};
+
+  print xml_2_test(\$xml), "\n";
+
+You can also extract the XML from an already existing test file (for example 'test.t') as follows:
+
+  use XML::Parsepp::Testgen qw(test_2_xml);
+
+  say test_2_xml('test.t');
+
 =head1 AUTHOR
 
 Klaus Eichner <klaus03@gmail.com>
@@ -1923,5 +1960,11 @@ Copyright (C) 2009-2011 by Klaus Eichner
 All rights reserved. This program is free software; you can redistribute
 it and/or modify it under the terms of the artistic license 2.0,
 see http://www.opensource.org/licenses/artistic-license-2.0.php
+
+=head1 SEE ALSO
+
+L<XML::Parsepp::Testgen>,
+L<XML::Reader>,
+L<XML::Parser>.
 
 =cut
