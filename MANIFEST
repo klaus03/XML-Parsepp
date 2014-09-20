@@ -1,8 +1,8 @@
+.gitignore
 Changes
 MANIFEST
 LICENCE
 Makefile.PL
-Build.PL
 README
 lib/XML/Parsepp.pm
 t/Test0040.t
