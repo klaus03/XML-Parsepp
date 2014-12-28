@@ -11,7 +11,6 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT    = qw();
 our @EXPORT_OK = qw();
-our $VERSION   = '0.07';
 
 sub new {
     my $class = shift;
@@ -442,7 +441,7 @@ sub _more {
             $buffer_breakout = 1;
             next;
         }
-        # pour identifier les différents possibilités de DTD (DOCTYPE, ELEMENT, ATTLIST, etc...), voir: http://www.u-picardie.fr/~ferment/xml/xml02.html
+        # pour identifier les differents possibilites de DTD (DOCTYPE, ELEMENT, ATTLIST, etc...), voir: http://www.u-picardie.fr/~ferment/xml/xml02.html
         elsif ($buffer_action eq 'D') { # DEFACT: '<!DOCTYPE [ ... ]>' a DTD section (DOCTYPE, ELEMENT, ATTLIST, etc...)
             my $finpos = -1;
             pos($buffer_text) = 0;
